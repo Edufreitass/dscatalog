@@ -14,25 +14,25 @@
 
 .main-menu {
   display: flex;
-  font-size: 18px;
   justify-content: center;
 
   li:nth-child(2) {
     margin-left: 85px;
     margin-right: 85px;
   }
+}
 
-  a {
-    font-style: normal;
-    color: rgba(255, 255, 255, 0.5);
+.nav-link {
+  font-size: 18px;
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.5);
 
-    &.active {
-      font-weight: bold;
-      color: #FFF;
-    }
+  &.active {
+    font-weight: bold;
+    color: #FFF;
+  }
 
-    &:hover {
-      color: #FFF;
-    }
+  &:hover {
+    color: #FFF;
   }
 }
