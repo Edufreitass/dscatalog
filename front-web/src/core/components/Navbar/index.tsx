@@ -1,9 +1,21 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { getAccessTokenDecoded, logout } from 'core/utils/auth';
 import './styles.scss';
 
 const Navbar = () => {
-  const currentUser = '';
+  const [currentUser, setCurrentUser] = useState('');
+  const location = useLocation();
+
+  useEffect(() => {
+    const currentUserData = getAccessTokenDecoded();
+    setCurrentUser(currentUserData.user_name);
+  }, [location])
+
+  const handleLogout = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    logout();
+  }
 
   return (
     <nav className="row bg-primary main-nav">
@@ -35,7 +47,11 @@ const Navbar = () => {
         {currentUser && (
           <>
           {currentUser}
-          <a href="logout" className="nav-link active d-inline">
+          <a 
+            href="#logout" 
+            className="nav-link active d-inline"
+            onClick={handleLogout}
+          >
             LOGOUT
           </a>
           </>
