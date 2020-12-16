@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 import { makePrivateRequest } from 'core/utils/request';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
@@ -6,79 +7,50 @@ import './styles.scss';
 type FormState = {
   name: string;
   price: string;
-  category: string;
   description: string;
+  imageUrl: string;
 }
 
-type FormEvent = React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
-
 const Form = () => {
-  const [formData, setFormData] = useState<FormState>({
-    name: '',
-    price: '',
-    category: '1',
-    description: ''
-  });
+  const { register, handleSubmit } = useForm<FormState>();
 
-  const handleOnChange = (event: FormEvent) => {
-    const name = event.target.name;
-    const value = event.target.value;
-
-    setFormData(data => ({ ...data, [name]: value }));
-  }
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const payload = {
-      ...formData,
-      imgUrl: 'https://images-americanas.b2w.io/produtos/01/00/img/46482/9/46482988_1GG.jpg',
-      categories: [{ id: formData.category }]
-    }
-
-    makePrivateRequest({ url: '/products', method: 'POST', data: payload })
-      .then(() => {
-        setFormData({ name: '', category: '', price: '', description: '' });
-      });
+  const onSubmit = (data: FormState) => {
+    makePrivateRequest({ url: '/products', method: 'POST', data });
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <BaseForm title="cadastrar um produto">
         <div className="row">
           <div className="col-6">
             <input
-              value={formData.name}
+              ref={register({ required: "Campo obrigatório" })}
               name="name"
               type="text"
-              className="form-control mb-5"
-              onChange={handleOnChange}
+              className="form-control margin-bottom-30 input-base"
               placeholder="Nome do produto"
             />
-            <select
-              value={formData.category}
-              className="form-control mb-5"
-              onChange={handleOnChange}
-              name="category"
-            >
-              <option value="1">Livros</option>
-              <option value="3">Computadores</option>
-              <option value="2">Eletrônicos</option>
-            </select>
             <input
-              value={formData.price}
+              ref={register({ required: "Campo obrigatório" })}
               name="price"
-              type="text"
-              className="form-control"
-              onChange={handleOnChange}
+              type="number"
+              className="form-control margin-bottom-30 input-base"
               placeholder="Preço"
+            />
+            <input
+              ref={register({ required: "Campo obrigatório" })}
+              name="imageUrl"
+              type="text"
+              className="form-control margin-bottom-30 input-base"
+              placeholder="URL da imagem"
             />
           </div>
           <div className="col-6">
             <textarea
+              ref={register({ required: "Campo obrigatório" })}
               name="description"
-              value={formData.description}
-              onChange={handleOnChange}
-              className="form-control"
+              className="form-control input-base"
+              placeholder="Descrição"
               cols={30}
               rows={10}
             />
