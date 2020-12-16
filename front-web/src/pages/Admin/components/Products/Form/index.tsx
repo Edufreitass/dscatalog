@@ -1,6 +1,8 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { makePrivateRequest } from 'core/utils/request';
+import { useHistory } from 'react-router-dom';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
 
@@ -13,11 +15,17 @@ type FormState = {
 
 const Form = () => {
   const { register, handleSubmit, errors } = useForm<FormState>();
+  const history = useHistory();
 
   const onSubmit = (data: FormState) => {
-    console.log(data);
-    
-    // makePrivateRequest({ url: '/products', method: 'POST', data });
+    makePrivateRequest({ url: '/products', method: 'POST', data })
+      .then(() => {
+        toast.info('Produto salvo com sucesso!')
+        history.push('/admin/products')
+      })
+      .catch(() => {
+        toast.error('Error ao salvar produto!')
+      });
   }
 
   return (
