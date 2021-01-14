@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.devsuperior.dscatalog.entities.Product;
 import com.devsuperior.dscatalog.factory.ProductFactory;
@@ -21,14 +24,30 @@ public class ProductRepositoryTests {
 	private long existingId;
 	private long nonExistingId;
 	private long countTotalProducts;
-
+	private long countPCGamerProducts;
+	
 	@BeforeEach
 	void setUp() throws Exception {
 		existingId = 1L;
 		nonExistingId = 1000L;
 		countTotalProducts = 25L;
+		countPCGamerProducts = 21L;
 	}
 
+	@Test
+	public void findShouldReturnProductsWhenNameExists() {
+		// Arranger
+		String name = "PC Gamer";
+		Pageable pageable = PageRequest.of(0, 10);
+		
+		// Act
+		Page<Product> result = repository.find(null, name, pageable);
+		
+		// Assert
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals(countPCGamerProducts, result.getTotalElements());
+	}
+	
 	@Test
 	public void saveShouldPersistWithAutoincrementWhenIdIsNull() {
 		// Arrange
