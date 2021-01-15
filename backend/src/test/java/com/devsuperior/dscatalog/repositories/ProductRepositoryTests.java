@@ -25,6 +25,7 @@ public class ProductRepositoryTests {
 	private long nonExistingId;
 	private long countTotalProducts;
 	private long countPCGamerProducts;
+	private Pageable pageable;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -32,13 +33,26 @@ public class ProductRepositoryTests {
 		nonExistingId = 1000L;
 		countTotalProducts = 25L;
 		countPCGamerProducts = 21L;
+		pageable = PageRequest.of(0, 10);
 	}
 
+	@Test
+	public void findShouldReturnAllProductsWhenNameIsEmpty() {
+		// Arranger
+		String name = "";
+		
+		// Act
+		Page<Product> result = repository.find(null, name, pageable);
+		
+		// Assert
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals(countTotalProducts, result.getTotalElements());
+	}
+	
 	@Test
 	public void findShouldReturnProductsWhenNameExistsIgnoringCase() {
 		// Arranger
 		String name = "pc gAMer";
-		Pageable pageable = PageRequest.of(0, 10);
 		
 		// Act
 		Page<Product> result = repository.find(null, name, pageable);
@@ -52,7 +66,6 @@ public class ProductRepositoryTests {
 	public void findShouldReturnProductsWhenNameExists() {
 		// Arranger
 		String name = "PC Gamer";
-		Pageable pageable = PageRequest.of(0, 10);
 		
 		// Act
 		Page<Product> result = repository.find(null, name, pageable);
