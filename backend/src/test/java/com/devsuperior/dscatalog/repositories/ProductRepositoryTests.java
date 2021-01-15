@@ -35,6 +35,20 @@ public class ProductRepositoryTests {
 	}
 
 	@Test
+	public void findShouldReturnProductsWhenNameExistsIgnoringCase() {
+		// Arranger
+		String name = "pc gAMer";
+		Pageable pageable = PageRequest.of(0, 10);
+		
+		// Act
+		Page<Product> result = repository.find(null, name, pageable);
+		
+		// Assert
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals(countPCGamerProducts, result.getTotalElements());
+	}
+	
+	@Test
 	public void findShouldReturnProductsWhenNameExists() {
 		// Arranger
 		String name = "PC Gamer";
