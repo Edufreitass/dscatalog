@@ -1,5 +1,6 @@
 package com.devsuperior.dscatalog.web;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -34,6 +35,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.devsuperior.dscatalog.dto.ProductDTO;
+import com.devsuperior.dscatalog.factory.ProductFactory;
 import com.devsuperior.dscatalog.services.ProductService;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -54,6 +56,41 @@ public class ProductResourceTests {
 	
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
+	
+	private Long existingId;
+	private Long nonExistingId;
+	private ProductDTO newProductDTO;
+	private ProductDTO existingProductDTO;
+	
+	@BeforeEach
+	public void setUp() throws Exception {
+		existingId = 1L;
+		nonExistingId = 2L;
+		
+		newProductDTO = ProductFactory.createProductDTO(null);
+		existingProductDTO = ProductFactory.createProductDTO(existingId);
+		
+		when(service.findById(existingId)).thenReturn(existingProductDTO);
+		when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
+	}
+	
+	@Test
+	public void findByIdShouldReturnProductWhenIdExists() throws Exception {
+		ResultActions result = 
+				mockMvc.perform(get("/products/{id}", existingId)
+						.accept(MediaType.APPLICATION_JSON));
+				
+		result.andExpect(status().isOk());
+	}
+
+	@Test
+	public void findByIdShouldReturnNotFoundWhenIdDoesNotExist() throws Exception  {
+		ResultActions result = 
+				mockMvc.perform(get("/products/{id}", nonExistingId)
+						.accept(MediaType.APPLICATION_JSON));
+				
+		result.andExpect(status().isNotFound());
+	}
 	
 	private String obtainAccessToken(String username, String password) throws Exception {
 		 
