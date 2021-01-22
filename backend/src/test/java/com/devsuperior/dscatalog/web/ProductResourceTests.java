@@ -50,6 +50,9 @@ public class ProductResourceTests {
 	
 	@MockBean
 	private ProductService service;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Value("${security.oauth2.client.client-id}")
 	private String clientId;
@@ -64,8 +67,14 @@ public class ProductResourceTests {
 	private ProductDTO existingProductDTO;
 	private PageImpl<ProductDTO> page;
 	
+	private String operatorUsername;
+	private String operatorPassword;
+	
 	@BeforeEach
 	void setUp() throws Exception {
+		operatorUsername = "alex@gmail.com";
+		operatorPassword = "123456";
+		
 		existingId = 1L;
 		nonExistingId = 2L;
 		dependentId = 3L;
@@ -88,6 +97,45 @@ public class ProductResourceTests {
 		doNothing().when(service).delete(existingId);
 		doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
 		doThrow(DatabaseException.class).when(service).delete(dependentId);
+	}
+	
+	@Test
+	public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+		
+		String jsonBody = objectMapper.writeValueAsString(newProductDTO);
+		
+		String expectedName = newProductDTO.getName();
+		Double expectedPrice = newProductDTO.getPrice();
+		
+		ResultActions result = 
+				mockMvc.perform(put("/products/{id}", existingId)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(status().isOk());
+		result.andExpect(jsonPath("$.id").exists());
+		result.andExpect(jsonPath("$.id").value(existingId));
+		result.andExpect(jsonPath("$.name").value(expectedName));
+		result.andExpect(jsonPath("$.price").value(expectedPrice));
+	}
+	
+	@Test
+	public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+		
+		String jsonBody = objectMapper.writeValueAsString(newProductDTO);
+		
+		ResultActions result = 
+				mockMvc.perform(put("/products/{id}", nonExistingId)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(status().isNotFound());
 	}
 	
 	@Test
