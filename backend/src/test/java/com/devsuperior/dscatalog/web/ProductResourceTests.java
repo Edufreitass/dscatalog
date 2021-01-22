@@ -61,17 +61,31 @@ public class ProductResourceTests {
 	private Long nonExistingId;
 	private ProductDTO newProductDTO;
 	private ProductDTO existingProductDTO;
+	private PageImpl<ProductDTO> page;
 	
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 		existingId = 1L;
 		nonExistingId = 2L;
 		
 		newProductDTO = ProductFactory.createProductDTO(null);
 		existingProductDTO = ProductFactory.createProductDTO(existingId);
 		
+		page = new PageImpl<>(List.of(existingProductDTO));
+		
 		when(service.findById(existingId)).thenReturn(existingProductDTO);
 		when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
+		
+		when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
+	}
+	
+	@Test
+	public void findAllShouldReturnPage() throws Exception {
+		ResultActions result = 
+				mockMvc.perform(get("/products")
+						.accept(MediaType.APPLICATION_JSON));
+				
+		result.andExpect(status().isOk());
 	}
 	
 	@Test
