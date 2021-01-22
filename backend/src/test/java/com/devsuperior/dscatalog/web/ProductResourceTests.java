@@ -59,6 +59,7 @@ public class ProductResourceTests {
 	
 	private Long existingId;
 	private Long nonExistingId;
+	private Long dependentId;
 	private ProductDTO newProductDTO;
 	private ProductDTO existingProductDTO;
 	private PageImpl<ProductDTO> page;
@@ -67,6 +68,7 @@ public class ProductResourceTests {
 	void setUp() throws Exception {
 		existingId = 1L;
 		nonExistingId = 2L;
+		dependentId = 3L;
 		
 		newProductDTO = ProductFactory.createProductDTO(null);
 		existingProductDTO = ProductFactory.createProductDTO(existingId);
@@ -77,6 +79,15 @@ public class ProductResourceTests {
 		when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
 		
 		when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
+		
+		when(service.insert(any())).thenReturn(newProductDTO);
+		
+		when(service.update(eq(existingId) ,any())).thenReturn(newProductDTO);
+		when(service.update(eq(nonExistingId) ,any())).thenThrow(ResourceNotFoundException.class);
+		
+		doNothing().when(service).delete(existingId);
+		doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
+		doThrow(DatabaseException.class).when(service).delete(dependentId);
 	}
 	
 	@Test
