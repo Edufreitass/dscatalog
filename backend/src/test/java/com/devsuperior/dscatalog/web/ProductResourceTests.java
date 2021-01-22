@@ -86,6 +86,7 @@ public class ProductResourceTests {
 						.accept(MediaType.APPLICATION_JSON));
 				
 		result.andExpect(status().isOk());
+		result.andExpect(jsonPath("$.content").exists());
 	}
 	
 	@Test
@@ -95,6 +96,8 @@ public class ProductResourceTests {
 						.accept(MediaType.APPLICATION_JSON));
 				
 		result.andExpect(status().isOk());
+		result.andExpect(jsonPath("$.id").exists());
+		result.andExpect(jsonPath("$.id").value(existingId));
 	}
 
 	@Test
