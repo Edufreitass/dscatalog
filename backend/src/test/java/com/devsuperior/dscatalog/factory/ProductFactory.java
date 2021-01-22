@@ -22,7 +22,6 @@ public class ProductFactory {
 
 	public static ProductDTO createProductDTO(Long id) {
 		ProductDTO dto = createProductDTO();
-		dto.setId(id);
 		return dto;
 	}
 	
