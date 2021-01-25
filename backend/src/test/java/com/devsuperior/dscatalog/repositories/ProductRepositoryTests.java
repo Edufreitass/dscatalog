@@ -1,5 +1,7 @@
 package com.devsuperior.dscatalog.repositories;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.entities.Product;
 import com.devsuperior.dscatalog.factory.ProductFactory;
 
@@ -25,6 +28,7 @@ public class ProductRepositoryTests {
 	private long nonExistingId;
 	private long countTotalProducts;
 	private long countPCGamerProducts;
+	private long countCategoryThreeProducts;
 	private Pageable pageable;
 	
 	@BeforeEach
@@ -33,12 +37,40 @@ public class ProductRepositoryTests {
 		nonExistingId = 1000L;
 		countTotalProducts = 25L;
 		countPCGamerProducts = 21L;
+		countCategoryThreeProducts = 23L;
 		pageable = PageRequest.of(0, 10);
+	}
+	
+	@Test
+	public void findShouldReturnOnlySelectedCategoryWhenCategoryInformed() {
+		// Arrange
+		List<Category> categories = new ArrayList<>();
+		categories.add(new Category(3l, null));
+		
+		// Act
+		Page<Product> result = repository.find(categories, "", pageable);
+		
+		// Assert
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals(countCategoryThreeProducts, result.getTotalElements());
+	}
+	
+	@Test
+	public void findShouldReturnAllProductsWhenCategoryNotInformed() {
+		// Arrange
+		List<Category> categories = null;
+		
+		// Act
+		Page<Product> result = repository.find(categories, "", pageable);
+		
+		// Assert
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals(countTotalProducts, result.getTotalElements());
 	}
 
 	@Test
 	public void findShouldReturnAllProductsWhenNameIsEmpty() {
-		// Arranger
+		// Arrange
 		String name = "";
 		
 		// Act
@@ -51,7 +83,7 @@ public class ProductRepositoryTests {
 	
 	@Test
 	public void findShouldReturnProductsWhenNameExistsIgnoringCase() {
-		// Arranger
+		// Arrange
 		String name = "pc gAMer";
 		
 		// Act
@@ -64,7 +96,7 @@ public class ProductRepositoryTests {
 	
 	@Test
 	public void findShouldReturnProductsWhenNameExists() {
-		// Arranger
+		// Arrange
 		String name = "PC Gamer";
 		
 		// Act
