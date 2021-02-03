@@ -10,5 +10,8 @@ test('should render ButtonIcon', () => {
   );
 
   const textElement = screen.getByText(text);
+  const iconElement = screen.getByTestId('arrow-icon');
+  
   expect(textElement).toBeInTheDocument();
+  expect(iconElement).toBeInTheDocument();
 });
