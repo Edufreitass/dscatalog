@@ -57,3 +57,30 @@ test('should render Form', async () => {
   expect(history.location.pathname).toBe('/admin/products');
   expect(screen.getByText(/CADASTRAR UM PRODUTO/i)).toBeInTheDocument();
 });
+
+test('should render Form', async () => {
+  render(
+    <Router history={history}> 
+      <Form />
+    </Router>
+  );
+
+  const submitButton = screen.getByRole('button', { name: /salvar/i });
+  userEvent.click(submitButton);
+
+  await waitFor(() => expect(screen.getAllByText('Campo obrigatório')).toHaveLength(5));
+
+  const nameInput = screen.getByTestId('name');
+  const priceInput = screen.getByTestId('price');
+  const imgUrlInput = screen.getByTestId('imgUrl');
+  const descriptionInput = screen.getByTestId('description');
+  const categoriesInput = screen.getByLabelText('Categorias');
+
+  userEvent.type(nameInput, 'Computador');
+  await selectEvent.select(categoriesInput, ['Computers', 'Electronics']);
+  userEvent.type(priceInput, '5000');
+  userEvent.type(imgUrlInput, 'image.jpg');
+  userEvent.type(descriptionInput, 'ótimo computador');
+
+  await waitFor(() => expect(screen.queryAllByText('Campo obrigatório')).toHaveLength(0));
+});
