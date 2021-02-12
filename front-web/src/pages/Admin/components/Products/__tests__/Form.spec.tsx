@@ -34,7 +34,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-describe.only('Creating a product', () => {
+describe('Creating a product', () => {
   beforeEach(() => {
     (useParams as jest.Mock).mockReturnValue({
       productId: 'create'
@@ -123,15 +123,17 @@ describe('Editing a product', () => {
     );
 
     const submitButton = screen.getByRole('button', { name: /salvar/i });
-    const categoriesInput = screen.getByLabelText('Categorias');
-    await selectEvent.select(categoriesInput, ['Computers', 'Electronics']);
 
-    fillFormData();
+    await waitFor(() => expect(screen.getByTestId('name')).toHaveValue('Macbook Pro'));
+    expect(screen.getByText('Computers')).toBeInTheDocument();
+    expect(screen.getByText('Electronics')).toBeInTheDocument();
+    expect(screen.getByTestId('price')).toHaveValue(1250);
+    expect(screen.getByTestId('imgUrl')).toHaveValue('image.jpg');
+    expect(screen.getByTestId('description')).toHaveValue('=)');
+    expect(screen.getByText(/EDITAR PRODUTO/i)).toBeInTheDocument();
 
     userEvent.click(submitButton);
 
     await waitFor(() => expect(screen.getByText('Produto salvo com sucesso!')).toBeInTheDocument());
-    expect(history.location.pathname).toBe('/admin/products');
-    expect(screen.getByText(/CADASTRAR UM PRODUTO/i)).toBeInTheDocument();
   });
 })
