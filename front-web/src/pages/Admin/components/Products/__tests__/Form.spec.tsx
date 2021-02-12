@@ -8,7 +8,7 @@ import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import history from 'core/utils/history';
 import Form from '../Form';
-import { categoriesResponse } from './fixtures';
+import { categoriesResponse, fillFormData } from './fixtures';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -30,7 +30,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-test('should render Form', async () => {
+test('should render Form and submit with success', async () => {
   render(
     <Router history={history}> 
       <ToastContainer />
@@ -39,17 +39,10 @@ test('should render Form', async () => {
   );
 
   const submitButton = screen.getByRole('button', { name: /salvar/i });
-  const nameInput = screen.getByTestId('name');
-  const priceInput = screen.getByTestId('price');
-  const imgUrlInput = screen.getByTestId('imgUrl');
-  const descriptionInput = screen.getByTestId('description');
   const categoriesInput = screen.getByLabelText('Categorias');
-
-  userEvent.type(nameInput, 'Computador');
   await selectEvent.select(categoriesInput, ['Computers', 'Electronics']);
-  userEvent.type(priceInput, '5000');
-  userEvent.type(imgUrlInput, 'image.jpg');
-  userEvent.type(descriptionInput, 'ótimo computador');
+
+  fillFormData();
 
   userEvent.click(submitButton);
 
@@ -58,7 +51,32 @@ test('should render Form', async () => {
   expect(screen.getByText(/CADASTRAR UM PRODUTO/i)).toBeInTheDocument();
 });
 
-test('should render Form', async () => {
+test('should render Form and submit with error', async () => {
+  server.use(
+    rest.post('http://localhost:8080/products', (req, res, ctx) => {
+      return res(ctx.status(500))
+    })
+  )
+
+  render(
+    <Router history={history}> 
+      <ToastContainer />
+      <Form />
+    </Router>
+  );
+
+  const submitButton = screen.getByRole('button', { name: /salvar/i });
+  const categoriesInput = screen.getByLabelText('Categorias');
+  await selectEvent.select(categoriesInput, ['Computers', 'Electronics']);
+
+  fillFormData();
+
+  userEvent.click(submitButton);
+
+  await waitFor(() => expect(screen.getByText('Erro ao salvar produto!')).toBeInTheDocument());
+});
+
+test('should render Form and show validations', async () => {
   render(
     <Router history={history}> 
       <Form />
@@ -69,18 +87,10 @@ test('should render Form', async () => {
   userEvent.click(submitButton);
 
   await waitFor(() => expect(screen.getAllByText('Campo obrigatório')).toHaveLength(5));
-
-  const nameInput = screen.getByTestId('name');
-  const priceInput = screen.getByTestId('price');
-  const imgUrlInput = screen.getByTestId('imgUrl');
-  const descriptionInput = screen.getByTestId('description');
   const categoriesInput = screen.getByLabelText('Categorias');
-
-  userEvent.type(nameInput, 'Computador');
   await selectEvent.select(categoriesInput, ['Computers', 'Electronics']);
-  userEvent.type(priceInput, '5000');
-  userEvent.type(imgUrlInput, 'image.jpg');
-  userEvent.type(descriptionInput, 'ótimo computador');
+
+  fillFormData();
 
   await waitFor(() => expect(screen.queryAllByText('Campo obrigatório')).toHaveLength(0));
 });

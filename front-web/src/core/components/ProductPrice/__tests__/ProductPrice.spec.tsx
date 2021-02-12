@@ -16,7 +16,7 @@ describe('Tests with price greather than zero', () => {
     // Assert
     // screen.debug();
     const currencyElement = screen.getByText('R$');
-    const priceElement = screen.getByText('1,200.00');
+    const priceElement = screen.getByText('1.200,00');
 
     expect(currencyElement).toBeInTheDocument();
     expect(priceElement).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe('Tests with price greather than zero', () => {
     );
 
     const currencyElement = screen.getByText('R$');
-    const priceElement = screen.getByText('100.00');
+    const priceElement = screen.getByText('100,00');
 
     expect(currencyElement).toBeInTheDocument();
     expect(priceElement).toBeInTheDocument();
@@ -42,7 +42,7 @@ it('should render ProductPrice with price equals zero', () => {
   );
 
   const currencyElement = screen.getByText('R$');
-  const priceElement = screen.getByText('0.00');
+  const priceElement = screen.getByText('0,00');
 
   expect(currencyElement).toBeInTheDocument();
   expect(priceElement).toBeInTheDocument();

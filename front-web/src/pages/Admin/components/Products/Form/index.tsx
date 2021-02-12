@@ -60,7 +60,7 @@ const Form = () => {
         history.push('/admin/products')
       })
       .catch(() => {
-        toast.error('Error ao salvar produto!')
+        toast.error('Erro ao salvar produto!')
       });
   }
 
