@@ -18,6 +18,25 @@ export const categoriesResponse = {
   ]
 }
 
+export const productResponse = {
+  "id": 3,
+  "name": "Macbook Pro",
+  "description": "=)",
+  "price": 1250.0,
+  "imgUrl": "image.jpg",
+  "date": "2020-07-14T10:00:00Z",
+  "categories": [
+    {
+      "id": 3,
+      "name": "Computers"
+    },
+    {
+      "id": 2,
+      "name": "Electronics"
+    }
+  ]
+}
+
 export const fillFormData = () => {
   const nameInput = screen.getByTestId('name');
   const priceInput = screen.getByTestId('price');
