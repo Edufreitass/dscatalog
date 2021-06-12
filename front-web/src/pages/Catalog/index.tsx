@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductsResponse } from 'core/types/Product';
 import { makeRequest } from 'core/utils/request';
+import ProductFilters from 'core/components/ProductFilters';
 import ProductCard from './components/ProductCard';
 import ProductCardLoader from './components/Loaders/ProductCardLoader';
 import Pagination from 'core/components/Pagination';
@@ -28,9 +29,12 @@ const Catalog = () => {
 
   return (
     <div className="catalog-container">
-      <h1 className="catalog-title">
-        Catálogo de produtos
-            </h1>
+      <div className="d-flex justify-content-between">
+        <h1 className="catalog-title">
+          Catálogo de produtos
+        </h1>
+        <ProductFilters />
+      </div>
       <div className="catalog-products">
         {isLoading ? <ProductCardLoader /> : (
           productsResponse?.content.map(product => (
