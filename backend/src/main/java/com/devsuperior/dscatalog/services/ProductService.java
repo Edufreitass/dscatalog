@@ -35,8 +35,8 @@ public class ProductService {
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
-//	@Autowired
-//	private S3Service s3Service;
+	@Autowired
+	private S3Service s3Service;
 
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAllPaged(Long categoryId, String name, PageRequest pageRequest) {
@@ -99,9 +99,9 @@ public class ProductService {
 
 	}
 
-//	public UriDTO uploadFile(MultipartFile file) {
-//		URL url = s3Service.uploadFile(file);
-//		return new UriDTO(url.toString());
-//	}
+	public UriDTO uploadFile(MultipartFile file) {
+		URL url = s3Service.uploadFile(file);
+		return new UriDTO(url.toString());
+	}
 
 }
