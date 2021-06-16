@@ -7,6 +7,7 @@ import { Category } from 'core/types/Product';
 import Select from 'react-select';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
+import ImageUpload from '../ImageUpload';
 
 type FormState = {
   name: string;
@@ -44,16 +45,16 @@ const Form = () => {
 
   useEffect(() => {
     setIsLoadingCategories(true);
-    makeRequest({ url: '/categories'})
+    makeRequest({ url: '/categories' })
       .then(response => setCategories(response.data.content))
       .finally(() => setIsLoadingCategories(false))
   }, []);
 
   const onSubmit = (data: FormState) => {
-    makePrivateRequest({ 
-      url: isEditing ? `/products/${productId}` : '/products', 
-      method: isEditing ? 'PUT' : 'POST', 
-      data 
+    makePrivateRequest({
+      url: isEditing ? `/products/${productId}` : '/products',
+      method: isEditing ? 'PUT' : 'POST',
+      data
     })
       .then(() => {
         toast.info('Produto salvo com sucesso!')
@@ -66,7 +67,7 @@ const Form = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <BaseForm 
+      <BaseForm
         title={formTitle}
       >
         <div className="row">
@@ -129,19 +130,7 @@ const Form = () => {
               )}
             </div>
             <div className="margin-bottom-30">
-              <input
-                ref={register({ required: "Campo obrigatório" })}
-                name="imgUrl"
-                type="text"
-                className="form-control input-base"
-                placeholder="Imagem do produto"
-                data-testid="imgUrl"
-              />
-              {errors.imgUrl && (
-                <div className="invalid-feedback d-block">
-                  {errors.imgUrl.message}
-                </div>
-              )}
+                <ImageUpload />
             </div>
           </div>
           <div className="col-6">
