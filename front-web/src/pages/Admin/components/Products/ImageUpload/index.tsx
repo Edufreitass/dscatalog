@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { ReactComponent as UploadPlaceholder } from 'core/assets/images/upload-placeholder.svg';
-import './styles.scss';
 import { makePrivateRequest } from "core/utils/request";
+import { toast } from "react-toastify";
+import './styles.scss';
 
 const ImageUpload = () => {
+
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const onUploadProgress = (progressEvent: ProgressEvent) => {
+    const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+
+    setUploadProgress(progress);
+  }
 
   const uploadImage = (selectedImage: File) => {
     const payload = new FormData();
@@ -12,15 +21,16 @@ const ImageUpload = () => {
     makePrivateRequest({
       url: '/products/image',
       method: 'POST',
-      data: payload
+      data: payload,
+      onUploadProgress
     })
       .then(() => {
         console.log("arquivo enviado com sucesso");
       })
       .catch(() => {
-        console.log("Erro ao enviar arquivo");
-
+        toast.error("Erro ao enviar arquivo");
       })
+      .finally(() => setUploadProgress(0));
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,8 +61,11 @@ const ImageUpload = () => {
       <div className="col-6 upload-placeholder">
         <UploadPlaceholder />
         <div className="upload-progress-container">
-          <div className="upload-progress">
+          <div 
+            className="upload-progress" 
+            style={{ width: `${uploadProgress}%`}}
 
+          >
           </div>
         </div>
       </div>
