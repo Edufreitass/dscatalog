@@ -9,11 +9,12 @@ import BaseForm from '../../BaseForm';
 import './styles.scss';
 import ImageUpload from '../ImageUpload';
 import DescriptionField from './DescriptionField';
+import { EditorState } from 'draft-js';
 
 export type FormState = {
   name: string;
   price: string;
-  description: string;
+  description: EditorState;
   imgUrl: string;
   categories: Category[];
 }
@@ -60,18 +61,20 @@ const Form = () => {
       imgUrl: uploadedImgUrl || productImgUrl
     }
 
-    makePrivateRequest({
-      url: isEditing ? `/products/${productId}` : '/products',
-      method: isEditing ? 'PUT' : 'POST',
-      data: payload
-    })
-      .then(() => {
-        toast.info('Produto salvo com sucesso!')
-        history.push('/admin/products')
-      })
-      .catch(() => {
-        toast.error('Erro ao salvar produto!')
-      });
+    console.log(payload);
+
+    // makePrivateRequest({
+    //   url: isEditing ? `/products/${productId}` : '/products',
+    //   method: isEditing ? 'PUT' : 'POST',
+    //   data: payload
+    // })
+    //   .then(() => {
+    //     toast.info('Produto salvo com sucesso!')
+    //     history.push('/admin/products')
+    //   })
+    //   .catch(() => {
+    //     toast.error('Erro ao salvar produto!')
+    //   });
   }
 
   const onUploadSuccess = (imgUrl: string) => {
@@ -153,7 +156,7 @@ const Form = () => {
             <DescriptionField control={control} />
             {errors.description && (
               <div className="invalid-feedback d-block">
-                {errors.description.message}
+                {errors.description}
               </div>
             )}
           </div>

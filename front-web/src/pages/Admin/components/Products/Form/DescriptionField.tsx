@@ -1,8 +1,10 @@
 import React from "react";
-import { Control, Controller } from "react-hook-form";
 import { Editor } from "react-draft-wysiwyg";
-import { FormState } from ".";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { Control, Controller } from "react-hook-form";
+import { FormState } from "./";
+import toolbar from './toolbar';
+// import './styles.scss';
 
 type Props = {
   control: Control<FormState>;
@@ -18,6 +20,7 @@ const DescriptionField = ({ control }: Props) => (
         editorClassName="editor-container"
         editorState={value}
         onEditorStateChange={onChange}
+        toolbar={toolbar}
       />
     )}
   />
