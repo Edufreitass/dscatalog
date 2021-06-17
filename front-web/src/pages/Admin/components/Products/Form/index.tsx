@@ -8,8 +8,9 @@ import Select from 'react-select';
 import BaseForm from '../../BaseForm';
 import './styles.scss';
 import ImageUpload from '../ImageUpload';
+import DescriptionField from './DescriptionField';
 
-type FormState = {
+export type FormState = {
   name: string;
   price: string;
   description: string;
@@ -149,15 +150,7 @@ const Form = () => {
             </div>
           </div>
           <div className="col-6">
-            <textarea
-              ref={register({ required: "Campo obrigatório" })}
-              name="description"
-              className="form-control input-base"
-              placeholder="Descrição"
-              cols={30}
-              rows={10}
-              data-testid="description"
-            />
+            <DescriptionField control={control} />
             {errors.description && (
               <div className="invalid-feedback d-block">
                 {errors.description.message}
