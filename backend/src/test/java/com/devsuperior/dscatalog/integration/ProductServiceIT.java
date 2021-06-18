@@ -30,8 +30,8 @@ public class ProductServiceIT {
 	void setUp() throws Exception {
 		existingId = 1L;
 		nonExistingId = 1000L;
-		countTotalProducts = 25L;
-		countPCGamerProducts = 21L;
+		countTotalProducts = 100L;
+		countPCGamerProducts = 96L;
 		pageRequest = PageRequest.of(0, 10);
 	}
 

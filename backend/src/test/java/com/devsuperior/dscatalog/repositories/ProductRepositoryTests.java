@@ -35,9 +35,9 @@ public class ProductRepositoryTests {
 	void setUp() throws Exception {
 		existingId = 1L;
 		nonExistingId = 1000L;
-		countTotalProducts = 25L;
-		countPCGamerProducts = 21L;
-		countCategoryThreeProducts = 23L;
+		countTotalProducts = 100L;
+		countPCGamerProducts = 96L;
+		countCategoryThreeProducts = 98L;
 		pageable = PageRequest.of(0, 10);
 	}
 	
